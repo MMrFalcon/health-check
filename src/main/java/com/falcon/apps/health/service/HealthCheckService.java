@@ -1,6 +1,7 @@
 package com.falcon.apps.health.service;
 
 import com.falcon.apps.health.dto.QueryResponse;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,8 +43,12 @@ public class HealthCheckService {
         webClientBuilder = builder;
     }
 
-    //    @Scheduled(fixedRate = 5000)
-    @Scheduled(fixedRate = 5000000)
+    @PostConstruct
+    public void checkHealthOnStartup() {
+        checkHealth();
+    }
+
+    @Scheduled(cron = "${scheduler_exp}")
     public void checkHealth() {
         Flux.fromIterable(listOfWebsites).log()
                 .flatMap(websiteForCheck -> {
@@ -69,7 +74,7 @@ public class HealthCheckService {
     }
 
     private void sendEmail(QueryResponse queryResponse) {
-        log.info("Request for send email");
+        log.info("Request for send an email");
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(emailTo);
         mailMessage.setText(queryResponse.url() + ": " + queryResponse.statusCode().value());
