@@ -1,4 +1,7 @@
-## Systemd service file 
+## Description
+An application for checking the status of websites. The checking frequency is determined by the SCHEDULER value. The list of websites should be provided without spaces, separated by commas in WEBSITES_FOR_CHECK. In case of a 4xx or 5xx response, the application sends an email to the specified address. All variables needed for email configuration are provided in README.md.
+
+## Systemd service file for installation on the Linux system
 Create app folder and nologin user.
 ```
 sudo useradd -r -s /usr/sbin/nologin health_service
